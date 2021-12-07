@@ -17,7 +17,7 @@ public class MethodMutator {
     private static final String VOCAB_TARGET = "vocab.before.txt";
     private static final String TRAIN_OPTIONS = "train_options.json";
 
-    private static String python = "python3";
+    private static String python = "python";
     private static boolean usingBeams = false;
     private static Integer numBeams = 2;
     private static String interpretBeams = "interpretBeams.py";
@@ -167,6 +167,7 @@ public class MethodMutator {
         try {
             List<String> cmd = buildCommand(input);
             ProcessBuilder pb = new ProcessBuilder(cmd);
+	    pb.redirectErrorStream(true); // this line!
             pb.directory(modelFile);
             Process p = pb.start();
 
@@ -189,6 +190,7 @@ public class MethodMutator {
                 interpretBeams(modelFile, mutants);
             } else {
                 while ((line = br.readLine()) != null) {
+		    System.out.println("Reading line:" + line);
                     if (i++ % 100 == 99) {
                         System.out.println("    Generated " + i + " mutated methods.");
                     }
